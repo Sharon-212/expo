@@ -47,3 +47,18 @@ export type { RedirectConfig } from './getRoutesCore';
 export type { SingularOptions } from './useScreens';
 
 export type * from './types';
+
+export {
+  Badge,
+  BadgeProps,
+  Icon,
+  IconProps,
+  Label,
+  LabelProps,
+  Menu,
+  MenuAction,
+  MenuProps,
+  MenuActionProps,
+  VectorIcon,
+  VectorIconProps,
+} from './primitives';
