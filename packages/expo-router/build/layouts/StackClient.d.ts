@@ -159,6 +159,13 @@ declare const Stack: ((props: ComponentProps<typeof RNStack>) => React.JSX.Eleme
         BackButton: typeof import("./stack-utils/elements").StackHeaderBackButton;
         Title: typeof import("./stack-utils/elements").StackHeaderTitle;
         SearchBar: typeof import("./stack-utils/elements").StackHeaderSearchBar;
+        Button: typeof import("./stack-utils/elements/StackHeaderButton").StackHeaderButton;
+        Badge: React.FC<import("./stack-utils/elements/common").StackHeaderBadgeProps>;
+        Label: React.FC<import("./stack-utils/elements/common").StackHeaderLabelProps>;
+        Icon: React.FC<import("./stack-utils/elements/common").StackHeaderIconProps>;
+        Menu: React.FC<import("./stack-utils/elements/common").StackHeaderMenuProps>;
+        MenuAction: React.FC<import("./stack-utils/elements/common").StackHeaderMenuActionProps>;
+        Item: typeof import("./stack-utils/elements/StackHeaderItem").StackHeaderItem;
     };
 };
 export default Stack;

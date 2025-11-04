@@ -1,6 +1,6 @@
-import { Stack } from 'expo-router';
+import { Icon, Label, Stack } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 
 import { IsProtectedContext } from '../utils/contexts';
 
@@ -27,13 +27,34 @@ export default function Layout() {
               large>
               Custom Header Title
             </Stack.Header.Title>
-            <Stack.Header.Left asChild>
-              <View style={{ padding: 10 }}>
-                <Text style={{ color: 'purple' }}>Custom Left</Text>
-              </View>
+            <Stack.Header.Left>
+              <Stack.Header.Button
+                style={{ color: 'green' }}
+                sharesBackground
+                selected
+                onPress={() => alert('Left button pressed!')}>
+                Left
+              </Stack.Header.Button>
+              <Stack.Header.Button
+                style={{ color: 'green' }}
+                selected={false}
+                sharesBackground
+                onPress={() => alert('2 pressed!')}>
+                <Label>2</Label>
+                <Icon sf="star.fill" />
+              </Stack.Header.Button>
             </Stack.Header.Left>
-            <Stack.Header.Right asChild>
-              <Text style={{ color: 'orange', marginRight: 10 }}>Custom Right</Text>
+            <Stack.Header.Right>
+              <Stack.Header.Menu>
+                <Stack.Header.Label>Menu</Stack.Header.Label>
+                <Stack.Header.MenuAction onPress={() => Alert.alert('Action 1 pressed!')}>
+                  <Label>Action 1</Label>
+                </Stack.Header.MenuAction>
+                <Stack.Header.MenuAction isOn onPress={() => Alert.alert('Action 2 pressed!')}>
+                  <Icon sf="star.fill" />
+                  <Label>Action 2</Label>
+                </Stack.Header.MenuAction>
+              </Stack.Header.Menu>
             </Stack.Header.Right>
           </Stack.Header>
         </Stack.Screen>
