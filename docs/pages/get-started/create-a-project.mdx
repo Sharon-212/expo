@@ -1,24 +1,184 @@
----
-title: Create a project
-description: Learn how to create a new Expo project.
-hideTOC: true
----
+// App.js - Sharon's Kitchen (Expo React Native)
+// Copy this file into a new Expo project (expo init) and replace App.js with this code.
+// How to run:
+// 1) Install Expo CLI: npm install -g expo-cli
+// 2) expo init sharons-kitchen
+// 3) Choose a blank template and replace App.js with this file
+// 4) npm install
+// 5) expo start
 
-import { Terminal } from '~/ui/components/Snippet';
+import React, { useState } from 'react';
+import { SafeAreaView, View, Text, Image, FlatList, TouchableOpacity, Linking, Alert, ScrollView, StyleSheet } from 'react-native';
 
-System requirements:
+const CONTACT_PRIMARY = '+233249630721'; // 0249630721 -> +233249630721
+const CONTACT_SECONDARY = '+233201033462'; // 0201033462 -> +233201033462
+const EMAIL = 'sharonasumadu1@gmail.com';
+const LOCATION = 'KNUST Campus';
 
-- [Node.js (LTS)](https://nodejs.org/en/).
-- macOS, Windows (Powershell and [WSL 2](https://expo.fyi/wsl)), and Linux are supported.
+const placeholderImage = 'https://via.placeholder.com/600x400.png?text=Sharon\'s+Kitchen+Placeholder';
 
-We recommend starting with the default project created by `create-expo-app`. The default project includes example code to help you get started.
+const sampleMenu = [
+  { id: '1', name: 'Jollof Rice with Chicken', price: 'GHS 25', img: placeholderImage },
+  { id: '2', name: 'Fried Rice & Beef', price: 'GHS 30', img: placeholderImage },
+  { id: '3', name: 'Banku and Tilapia', price: 'GHS 35', img: placeholderImage },
+  { id: '4', name: 'Waakye (Large)', price: 'GHS 20', img: placeholderImage },
+  { id: '5', name: 'Vegetable Salad', price: 'GHS 15', img: placeholderImage },
+];
 
-To create a new project, run the following command:
+export default function App() {
+  const [screen, setScreen] = useState('home');
 
-<Terminal cmd={['$ npx create-expo-app@latest']} />
+  function openWhatsApp(number) {
+    const message = encodeURIComponent("Hello Sharon's Kitchen! I would like to place an order. Please help.");
+    // Try native app first
+    const appUrl = `whatsapp://send?phone=${number}&text=${message}`;
+    const webUrl = `https://wa.me/${number.replace('+','')}/?text=${message}`;
 
-> You can choose a different template by adding the [`--template` option](/more/create-expo/#--template).
+    Linking.canOpenURL(appUrl)
+      .then((supported) => {
+        if (supported) return Linking.openURL(appUrl);
+        return Linking.openURL(webUrl);
+      })
+      .catch(() => Alert.alert('Could not open WhatsApp'));
+  }
 
-## Next step
+  function makeCall(number) {
+    const url = `tel:${number}`;
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (!supported) return Alert.alert('Phone call not supported on this device');
+        return Linking.openURL(url);
+      })
+      .catch(() => Alert.alert('Could not make a call'));
+  }
 
-You have a project. Now it's time to set up your development environment so that you can start developing.
+  function renderHome() {
+    return (
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <Image source={{ uri: placeholderImage }} style={styles.hero} />
+        <Text style={styles.title}>Welcome to Sharon's Kitchen</Text>
+        <Text style={styles.tagline}>A home of delicious food at an affordable price</Text>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Our Services</Text>
+          <Text style={styles.text}>• Pickup or Delivery</Text>
+          <Text style={styles.text}>• Home Services</Text>
+          <Text style={styles.text}>• Catering for Weddings, Graduations, Engagements, Parties & more</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Contact</Text>
+          <Text style={styles.text}>Phone: 0249630721 / 0201033462</Text>
+          <Text style={styles.text}>Email: {EMAIL}</Text>
+          <Text style={styles.text}>Location: {LOCATION}</Text>
+        </View>
+
+        <View style={styles.buttonsRow}>
+          <TouchableOpacity style={styles.primaryButton} onPress={() => openWhatsApp(CONTACT_PRIMARY)}>
+            <Text style={styles.buttonText}>Order on WhatsApp</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton} onPress={() => makeCall(CONTACT_PRIMARY)}>
+            <Text style={styles.buttonText}>Call Now</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    );
+  }
+
+  function renderMenu() {
+    return (
+      <View style={{ padding: 10, flex: 1 }}>
+        <Text style={styles.sectionTitle}>Menu</Text>
+        <FlatList
+          data={sampleMenu}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image source={{ uri: item.img }} style={styles.cardImage} />
+              <View style={{ flex: 1, paddingLeft: 10 }}>
+                <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
+                <Text style={{ marginTop: 6 }}>{item.price}</Text>
+                <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                  <TouchableOpacity style={styles.orderButton} onPress={() => openWhatsApp(CONTACT_PRIMARY)}>
+                    <Text style={styles.orderButtonText}>Order (WhatsApp)</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.orderButton, { marginLeft: 8 }]} onPress={() => makeCall(CONTACT_PRIMARY)}>
+                    <Text style={styles.orderButtonText}>Call</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
+        />
+      </View>
+    );
+  }
+
+  function renderAbout() {
+    return (
+      <View style={{ padding: 20 }}>
+        <Text style={styles.sectionTitle}>About Sharon's Kitchen</Text>
+        <Text style={styles.text}>We provide delicious meals at affordable prices and cater to events of all sizes. Contact us for pickup, delivery, or event catering.</Text>
+
+        <View style={{ marginTop: 16 }}>
+          <Text style={styles.sectionTitle}>Email</Text>
+          <Text style={styles.text}>{EMAIL}</Text>
+        </View>
+
+        <View style={{ marginTop: 16 }}>
+          <Text style={styles.sectionTitle}>Location</Text>
+          <Text style={styles.text}>{LOCATION}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff8f0' }}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Sharon's Kitchen</Text>
+      </View>
+
+      <View style={{ flex: 1 }}>
+        {screen === 'home' && renderHome()}
+        {screen === 'menu' && renderMenu()}
+        {screen === 'about' && renderAbout()}
+      </View>
+
+      <View style={styles.tabbar}>
+        <TouchableOpacity style={styles.tabItem} onPress={() => setScreen('home')}>
+          <Text style={styles.tabText}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem} onPress={() => setScreen('menu')}>
+          <Text style={styles.tabText}>Menu</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem} onPress={() => setScreen('about')}>
+          <Text style={styles.tabText}>Contact</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: { backgroundColor: '#d35400', padding: 12, alignItems: 'center' },
+  headerTitle: { color: 'white', fontWeight: 'bold', fontSize: 20 },
+  hero: { width: '100%', height: 180, borderRadius: 8 },
+  title: { fontSize: 22, fontWeight: 'bold', marginTop: 12, textAlign: 'center' },
+  tagline: { textAlign: 'center', marginTop: 6, color: '#333' },
+  section: { marginTop: 16 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
+  text: { color: '#333', lineHeight: 20 },
+  buttonsRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 18 },
+  primaryButton: { flex: 1, backgroundColor: '#16a085', padding: 12, borderRadius: 8, marginRight: 8, alignItems: 'center' },
+  secondaryButton: { flex: 1, backgroundColor: '#2980b9', padding: 12, borderRadius: 8, marginLeft: 8, alignItems: 'center' },
+  buttonText: { color: 'white', fontWeight: 'bold' },
+  tabbar: { height: 60, flexDirection: 'row', borderTopWidth: 1, borderColor: '#eee' },
+  tabItem: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  tabText: { color: '#333' },
+  card: { flexDirection: 'row', marginVertical: 8, backgroundColor: 'white', padding: 8, borderRadius: 8, elevation: 2 },
+  cardImage: { width: 120, height: 80, borderRadius: 6 },
+  orderButton: { backgroundColor: '#d35400', padding: 8, borderRadius: 6 },
+  orderButtonText: { color: 'white', fontSize: 12, fontWeight: 'bold' },
+});
